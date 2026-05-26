@@ -1,299 +1,233 @@
-/* ============================================================
-   OSTERN AUF DEUTSCH - exercises.js
-   Claudia Toth - claudiatoth.github.io
-   Fiecare exercițiu are butoane proprii Verifică + Resetează
-   ============================================================ */
+// ============================================
+// EXERCIȚII — Ostern auf Deutsch (refactor mai 2026)
+// Claudia Toth · Annettes Deutschkurs · 5 patterns variate
+// normalizeAnswer robust (fold diacritice RO + separator flex)
+// ============================================
 
-const ex1Data = {
-    wordBank: ['Osterhase', 'Karfreitag', 'Auferstehung', 'Ostereier', 'Osterkorb', 'feiern', 'Osterfeuer'],
-    questions: [
-        { sentence: 'Am ___ ist Jesus Christus gestorben.',             answer: 'Karfreitag' },
-        { sentence: 'Die ___ Jesu Christi feiern wir am Ostersonntag.', answer: 'Auferstehung' },
-        { sentence: 'Die Kinder suchen die bunten ___ im Garten.',      answer: 'Ostereier' },
-        { sentence: 'Der ___ bringt den Kindern Schokolade.',           answer: 'Osterhase' },
-        { sentence: 'In diesem ___ sind Eier und Süßigkeiten.',         answer: 'Osterkorb' },
-        { sentence: 'Wir ___ Ostern zusammen mit der Familie.',         answer: 'feiern' },
-        { sentence: 'Am Ostersamstag entzündet man ein ___ .',          answer: 'Osterfeuer' }
-    ]
-};
-
-function renderEx1() {
-    const container = document.getElementById('main-section-1');
-    if (!container) return;
-    const options = ex1Data.wordBank.map(w => `<option value="${w}">${w}</option>`).join('');
-    let html = `<div class="exercise-instruction">Alege cuvântul corect din lista de mai jos pentru fiecare propoziție.</div>
-        <div class="word-bank">🗂️ <strong>Cuvinte:</strong> ${ex1Data.wordBank.join(' • ')}</div>`;
-    ex1Data.questions.forEach((q, i) => {
-        const parts = q.sentence.split('___');
-        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group">
-            <label>${parts[0]}<select id="ex1-q${i}"><option value="">– alege –</option>${options}</select>${parts[1]}</label>
-            <div class="feedback" id="ex1-f${i}"></div></div></div>`;
-    });
-    html += buildExButtons(1);
-    html += buildRezolvari(1, ex1Data.questions.map((q, i) => `${i+1}. ${q.answer}`));
-    container.innerHTML = html;
+function normalizeAnswer(s) {
+    return (s || '')
+        .toLowerCase()
+        .replace(/ß/g, 'ss').replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue')
+        .replace(/[ăâ]/g, 'a').replace(/î/g, 'i').replace(/[șş]/g, 's').replace(/[țţ]/g, 't')
+        .replace(/…/g, '...').replace(/\s*\.\.\.\s*/g, ' ')
+        .replace(/\s*\/\s*/g, ' ').replace(/\s*,\s*/g, ' ')
+        .replace(/\s+/g, ' ').replace(/[.!?;:]/g, '')
+        .trim();
 }
 
-function checkEx1(showScore = true) {
-    let correct = 0;
-    ex1Data.questions.forEach((q, i) => {
-        const sel = document.getElementById(`ex1-q${i}`);
-        const fb  = document.getElementById(`ex1-f${i}`);
-        if (!sel || !fb) return;
-        if (sel.value === q.answer) { fb.className = 'feedback correct'; fb.textContent = '✓ Corect!'; correct++; }
-        else { fb.className = 'feedback wrong'; fb.textContent = sel.value ? `✗ Greșit. Corect: ${q.answer}` : `✗ Fără răspuns. Corect: ${q.answer}`; }
-    });
-    if (showScore) showExScore(1, correct, ex1Data.questions.length);
-    return { correct, total: ex1Data.questions.length };
-}
-
-function resetEx1() {
-    ex1Data.questions.forEach((_, i) => {
-        const s = document.getElementById(`ex1-q${i}`); const f = document.getElementById(`ex1-f${i}`);
-        if (s) s.value = ''; if (f) f.className = 'feedback';
-    });
-    hideExScore(1);
-    const r = document.getElementById('rezolvari-1'); if (r) r.classList.remove('show');
-}
-
-// ── EX 2 ─────────────────────────────────────────────────────────────────
-const ex2Data = [
-    { text: 'Ostern ist immer am 25. März.',                               answer: 'F', explanation: 'Ostern hat kein festes Datum.' },
-    { text: 'Der Karfreitag ist ein gesetzlicher Feiertag in Deutschland.', answer: 'R', explanation: 'Richtig! Karfreitag ist frei.' },
-    { text: 'Der Osterhase bringt den Kindern Süßigkeiten.',               answer: 'R', explanation: 'Richtig! Schokolade und Eier.' },
-    { text: 'Die Fastenzeit endet am Ostersonntag.',                       answer: 'R', explanation: 'Richtig! Ostern beendet die Fastenzeit.' },
-    { text: 'In Deutschland feiern alle Menschen Ostern nur religiös.',    answer: 'F', explanation: 'Falsch! Viele feiern es auch kulturell.' }
+// ============================================
+// EX 1: Completează cu cuvântul potrivit (7 itemi)
+// ============================================
+const ex1Data = [
+    { id: 'a', sentence: 'Am ____ ist Jesus Christus gestorben.', accept: ['karfreitag'], correct: 'Karfreitag', hint: 'Vinerea Mare' },
+    { id: 'b', sentence: 'Die ____ Jesu Christi feiern wir am Ostersonntag.', accept: ['auferstehung'], correct: 'Auferstehung', hint: 'învierea' },
+    { id: 'c', sentence: 'Die Kinder suchen die bunten ____ im Garten.', accept: ['ostereier'], correct: 'Ostereier', hint: 'ouăle de Paști (plural)' },
+    { id: 'd', sentence: 'Der ____ bringt den Kindern Schokolade.', accept: ['osterhase'], correct: 'Osterhase', hint: 'iepurașul de Paști' },
+    { id: 'e', sentence: 'In diesem ____ sind Eier und Süßigkeiten.', accept: ['osterkorb'], correct: 'Osterkorb', hint: 'coșul de Paști' },
+    { id: 'f', sentence: 'Wir ____ Ostern zusammen mit der Familie.', accept: ['feiern'], correct: 'feiern', hint: 'a sărbători' },
+    { id: 'g', sentence: 'Am Ostersamstag entzünden viele Menschen ein ____ .', accept: ['osterfeuer'], correct: 'Osterfeuer', hint: 'focul de Paști' }
 ];
 
-function renderEx2() {
-    const container = document.getElementById('main-section-2');
-    if (!container) return;
-    let html = `<div class="exercise-instruction">Marchează <strong>R</strong>ichtig (adevărat) sau <strong>F</strong>alsch (fals).</div>`;
-    ex2Data.forEach((q, i) => {
-        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group">
-            <label>${q.text}</label>
-            <div class="radio-group">
-                <label><input type="radio" name="ex2-q${i}" value="R"> ✅ Richtig</label>
-                <label><input type="radio" name="ex2-q${i}" value="F"> ❌ Falsch</label>
-            </div>
-            <div class="feedback" id="ex2-f${i}"></div></div></div>`;
+function buildEx1() {
+    const c = document.getElementById('ex1-container'); if (!c) return;
+    let html = '<div class="exercise-instruction"><strong>📝 Completează propozițiile.</strong><br>Folosește cuvintele potrivite din vocabularul Ostern. Hint-ul îți dă traducerea RO.</div>';
+    ex1Data.forEach((item, i) => {
+        const parts = item.sentence.split('____');
+        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group"><label>${parts[0]}<input type="text" id="ex1-${item.id}" placeholder="${item.hint}" style="width:200px; margin:0 4px;">${parts[1]}</label></div><div class="feedback" id="ex1-f${item.id}"></div></div>`;
     });
-    html += buildExButtons(2);
-    html += buildRezolvari(2, ex2Data.map((q, i) => `${i+1}. ${q.answer} – ${q.explanation}`));
-    container.innerHTML = html;
+    c.innerHTML = html;
 }
 
-function checkEx2(showScore = true) {
+function checkEx1() {
     let correct = 0;
-    ex2Data.forEach((q, i) => {
-        const sel = document.querySelector(`input[name="ex2-q${i}"]:checked`);
-        const fb  = document.getElementById(`ex2-f${i}`);
-        if (!fb) return;
-        if (!sel) { fb.className = 'feedback wrong'; fb.textContent = `✗ Fără răspuns. Corect: ${q.answer}`; return; }
-        if (sel.value === q.answer) { fb.className = 'feedback correct'; fb.textContent = `✓ Corect! ${q.explanation}`; correct++; }
-        else { fb.className = 'feedback wrong'; fb.textContent = `✗ Greșit. Corect: ${q.answer} – ${q.explanation}`; }
+    ex1Data.forEach(item => {
+        const u = normalizeAnswer(document.getElementById(`ex1-${item.id}`).value);
+        const f = document.getElementById(`ex1-f${item.id}`);
+        const ok = item.accept.some(a => normalizeAnswer(a) === u);
+        f.className = ok ? 'feedback correct' : 'feedback incorrect';
+        f.textContent = ok ? `✓ ${item.correct}` : `Corect: ${item.correct} (${item.hint})`;
+        if (ok) correct++;
     });
-    if (showScore) showExScore(2, correct, ex2Data.length);
+    return { correct, total: ex1Data.length };
+}
+
+// ============================================
+// EX 2: Richtig oder Falsch (6 itemi culturali)
+// ============================================
+const ex2Data = [
+    { id: 'a', text: 'Ostern ist immer am 25. März.', accept: ['f', 'falsch'], correct: 'Falsch', exp: 'Ostern NU are dată fixă — cade între 22 martie și 25 aprilie.' },
+    { id: 'b', text: 'Der Karfreitag ist ein gesetzlicher Feiertag in Deutschland.', accept: ['r', 'richtig'], correct: 'Richtig', exp: 'Karfreitag este zi liberă oficială (Feiertag) în toată Germania.' },
+    { id: 'c', text: 'Der Osterhase bringt den Kindern Süßigkeiten.', accept: ['r', 'richtig'], correct: 'Richtig', exp: 'Tradiția spune că Osterhase aduce și ascunde ouă vopsite + ciocolată.' },
+    { id: 'd', text: 'Die Fastenzeit endet am Ostersonntag.', accept: ['r', 'richtig'], correct: 'Richtig', exp: 'Postul Mare durează 40 zile și se încheie la Învierea de duminică.' },
+    { id: 'e', text: 'Pluralul lui das Osterei este die Osterei.', accept: ['f', 'falsch'], correct: 'Falsch', exp: 'Pluralul corect este die Osterei<strong>er</strong> (+er, ca la das Buch → Bücher).' },
+    { id: 'f', text: 'Pluralul lui der Osterhase este die Osterhasen.', accept: ['r', 'richtig'], correct: 'Richtig', exp: 'der Osterhase face plural die Osterhasen (+n — n-Deklination).' }
+];
+
+function buildEx2() {
+    const c = document.getElementById('ex2-container'); if (!c) return;
+    let html = '<div class="exercise-instruction"><strong>📝 Richtig oder Falsch?</strong><br>Scrie <strong>R</strong> (Richtig = adevărat) sau <strong>F</strong> (Falsch = fals) pentru fiecare propoziție.</div>';
+    ex2Data.forEach((item, i) => {
+        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group"><label>${item.text}</label><input type="text" id="ex2-${item.id}" placeholder="R sau F" style="width:80px;"></div><div class="feedback" id="ex2-f${item.id}"></div></div>`;
+    });
+    c.innerHTML = html;
+}
+
+function checkEx2() {
+    let correct = 0;
+    ex2Data.forEach(item => {
+        const u = normalizeAnswer(document.getElementById(`ex2-${item.id}`).value);
+        const f = document.getElementById(`ex2-f${item.id}`);
+        const ok = item.accept.some(a => normalizeAnswer(a) === u);
+        f.className = ok ? 'feedback correct' : 'feedback incorrect';
+        f.innerHTML = ok ? `✓ ${item.correct} — ${item.exp}` : `Corect: ${item.correct} — ${item.exp}`;
+        if (ok) correct++;
+    });
     return { correct, total: ex2Data.length };
 }
 
-function resetEx2() {
-    ex2Data.forEach((_, i) => {
-        document.querySelectorAll(`input[name="ex2-q${i}"]`).forEach(r => r.checked = false);
-        const f = document.getElementById(`ex2-f${i}`); if (f) f.className = 'feedback';
-    });
-    hideExScore(2);
-    const r = document.getElementById('rezolvari-2'); if (r) r.classList.remove('show');
-}
-
-// ── EX 3 ─────────────────────────────────────────────────────────────────
+// ============================================
+// EX 3: Traducere RO → DE — urări și expresii (7 itemi)
+// ============================================
 const ex3Data = [
-    { ro: 'Paște fericit!',       de: 'Frohe Ostern',                   alt: ['ein frohes osterfest'] },
-    { ro: 'Paște binecuvântat!',  de: 'Gesegnete Ostern',               alt: [] },
-    { ro: 'Hristos a înviat!',    de: 'Christus ist auferstanden',       alt: [] },
-    { ro: 'Adevărat a înviat!',   de: 'Wahrhaftig ist er auferstanden',  alt: [] },
-    { ro: 'Abia aștept Paștele.', de: 'Ich freue mich auf Ostern',      alt: [] }
+    { id: 'a', ro: 'Paște fericit!', accept: ['frohe ostern', 'frohe ostern!'], correct: 'Frohe Ostern!' },
+    { id: 'b', ro: 'Paște binecuvântat!', accept: ['gesegnete ostern', 'gesegnete ostern!'], correct: 'Gesegnete Ostern!' },
+    { id: 'c', ro: 'Hristos a înviat!', accept: ['christus ist auferstanden', 'christus ist auferstanden!'], correct: 'Christus ist auferstanden!' },
+    { id: 'd', ro: 'Adevărat a înviat!', accept: ['wahrhaftig ist er auferstanden', 'wahrhaftig ist er auferstanden!'], correct: 'Wahrhaftig ist er auferstanden!' },
+    { id: 'e', ro: 'Abia aștept Paștele.', accept: ['ich freue mich auf ostern', 'ich freue mich auf ostern.'], correct: 'Ich freue mich auf Ostern.' },
+    { id: 'f', ro: 'Toate cele bune de Paști!', accept: ['alles gute zu ostern', 'alles gute zu ostern!'], correct: 'Alles Gute zu Ostern!' },
+    { id: 'g', ro: 'Vacanță de Paști frumoasă!', accept: ['schoene osterferien', 'schöne osterferien', 'schoene osterferien!', 'schöne osterferien!'], correct: 'Schöne Osterferien!' }
 ];
 
-function renderEx3() {
-    const container = document.getElementById('main-section-3');
-    if (!container) return;
-    let html = `<div class="exercise-instruction">Traduce în germană. Verificarea nu ține cont de majuscule sau punctuație.</div>`;
-    ex3Data.forEach((q, i) => {
-        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group">
-            <label>${q.ro}</label>
-            <input type="text" id="ex3-q${i}" placeholder="Scrie în germană...">
-            <div class="feedback" id="ex3-f${i}"></div></div></div>`;
+function buildEx3() {
+    const c = document.getElementById('ex3-container'); if (!c) return;
+    let html = '<div class="exercise-instruction"><strong>📝 Traducere RO → DE.</strong><br>Scrie urarea sau expresia în germană. Verificarea acceptă cu/fără diacritice (ae=ä, oe=ö, ue=ü, ss=ß).</div>';
+    ex3Data.forEach((item, i) => {
+        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group"><label>🇷🇴 ${item.ro}</label><input type="text" id="ex3-${item.id}" placeholder="în germană..." style="width:100%;"></div><div class="feedback" id="ex3-f${item.id}"></div></div>`;
     });
-    html += buildExButtons(3);
-    html += buildRezolvari(3, ex3Data.map((q, i) => `${i+1}. ${q.de}!`));
-    container.innerHTML = html;
+    c.innerHTML = html;
 }
 
-function checkEx3(showScore = true) {
+function checkEx3() {
     let correct = 0;
-    ex3Data.forEach((q, i) => {
-        const input = document.getElementById(`ex3-q${i}`);
-        const fb    = document.getElementById(`ex3-f${i}`);
-        if (!input || !fb) return;
-        const val  = input.value.trim().toLowerCase().replace(/[!.,?]/g,'');
-        const exp  = q.de.toLowerCase().replace(/[!.,?]/g,'');
-        const alts = q.alt.map(a => a.toLowerCase().replace(/[!.,?]/g,''));
-        if (val === exp || alts.includes(val)) { fb.className = 'feedback correct'; fb.textContent = '✓ Corect!'; correct++; }
-        else if (!val) { fb.className = 'feedback wrong'; fb.textContent = `✗ Lipsă. Răspuns: ${q.de}!`; }
-        else { fb.className = 'feedback wrong'; fb.textContent = `✗ Greșit. Răspuns: ${q.de}!`; }
+    ex3Data.forEach(item => {
+        const u = normalizeAnswer(document.getElementById(`ex3-${item.id}`).value);
+        const f = document.getElementById(`ex3-f${item.id}`);
+        const ok = item.accept.some(a => normalizeAnswer(a) === u);
+        f.className = ok ? 'feedback correct' : 'feedback incorrect';
+        f.textContent = ok ? `✓ ${item.correct}` : `Corect: ${item.correct}`;
+        if (ok) correct++;
     });
-    if (showScore) showExScore(3, correct, ex3Data.length);
     return { correct, total: ex3Data.length };
 }
 
-function resetEx3() {
-    ex3Data.forEach((_, i) => {
-        const inp = document.getElementById(`ex3-q${i}`); const f = document.getElementById(`ex3-f${i}`);
-        if (inp) inp.value = ''; if (f) f.className = 'feedback';
-    });
-    hideExScore(3);
-    const r = document.getElementById('rezolvari-3'); if (r) r.classList.remove('show');
-}
-
-// ── EX 4 ─────────────────────────────────────────────────────────────────
-const ex4Data = [
-    { question: 'Cum se spune "iepurașul de Paști" în germană?',
-      options: ['der Osterkorb','der Osterhase','das Osterlamm','die Osterkerze'], answer: 1 },
-    { question: 'Ce înseamnă verbul "feiern"?',
-      options: ['a posti','a dărui','a sărbători','a ascunde'], answer: 2 },
-    { question: 'Care este răspunsul la "Christus ist auferstanden!"?',
-      options: ['Frohe Ostern!','Gesegnete Ostern!','Wahrhaftig ist er auferstanden!','Danke schön!'], answer: 2 },
-    { question: 'Ce înseamnă adjectivul "bunt"?',
-      options: ['festiv','tradițional','religios','colorat'], answer: 3 },
-    { question: 'Care zi este Feiertag în Germania?',
-      options: ['Palmsonntag','Ostermittwoch','Karfreitag','Aschermittwoch'], answer: 2 }
+// ============================================
+// EX 4: SORT 3 coloane — der / die / das (15 substantive Ostern)
+// ============================================
+const ex4Words = [
+    'Osterhase', 'Osterei', 'Osterkerze', 'Karfreitag', 'Osterlamm',
+    'Auferstehung', 'Osterkorb', 'Osterfeuer', 'Fastenzeit', 'Osternest',
+    'Palmsonntag', 'Osterzeit', 'Ostermontag', 'Osterfest', 'Ostersonntag'
 ];
-
-function renderEx4() {
-    const container = document.getElementById('main-section-4');
-    if (!container) return;
-    let html = `<div class="exercise-instruction">Alege varianta corectă pentru fiecare întrebare.</div>`;
-    ex4Data.forEach((q, i) => {
-        const choices = q.options.map((opt, j) =>
-            `<label><input type="radio" name="ex4-q${i}" value="${j}"> ${opt}</label>`).join('');
-        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group">
-            <label>${q.question}</label>
-            <div class="choices">${choices}</div>
-            <div class="feedback" id="ex4-f${i}"></div></div></div>`;
-    });
-    html += buildExButtons(4);
-    html += buildRezolvari(4, ex4Data.map((q, i) => `${i+1}. ${q.options[q.answer]}`));
-    container.innerHTML = html;
-}
-
-function checkEx4(showScore = true) {
-    let correct = 0;
-    ex4Data.forEach((q, i) => {
-        const sel = document.querySelector(`input[name="ex4-q${i}"]:checked`);
-        const fb  = document.getElementById(`ex4-f${i}`);
-        if (!fb) return;
-        if (!sel) { fb.className = 'feedback wrong'; fb.textContent = `✗ Fără răspuns. Corect: ${q.options[q.answer]}`; return; }
-        if (parseInt(sel.value) === q.answer) { fb.className = 'feedback correct'; fb.textContent = '✓ Corect!'; correct++; }
-        else { fb.className = 'feedback wrong'; fb.textContent = `✗ Greșit. Corect: ${q.options[q.answer]}`; }
-    });
-    if (showScore) showExScore(4, correct, ex4Data.length);
-    return { correct, total: ex4Data.length };
-}
-
-function resetEx4() {
-    ex4Data.forEach((_, i) => {
-        document.querySelectorAll(`input[name="ex4-q${i}"]`).forEach(r => r.checked = false);
-        const f = document.getElementById(`ex4-f${i}`); if (f) f.className = 'feedback';
-    });
-    hideExScore(4);
-    const r = document.getElementById('rezolvari-4'); if (r) r.classList.remove('show');
-}
-
-// ── EX 5 ─────────────────────────────────────────────────────────────────
-const ex5Data = {
-    wordBank: ['Ostern','Oma','wunderschön','Ihnen','Garten'],
-    questions: [
-        { before: 'Lehrerin: Was macht ihr zu',      after: '?',               answer: 'Ostern' },
-        { before: 'Schüler: Wir fahren zu',           after: ' und färben Eier.', answer: 'Oma' },
-        { before: 'Lehrerin: Das klingt',             after: '! Frohe Ostern!', answer: 'wunderschön' },
-        { before: 'Schüler: Danke,',                  after: ' auch!',          answer: 'Ihnen' },
-        { before: 'Schüler: Wir verstecken Eier im', after: '.',               answer: 'Garten' }
-    ]
+const ex4Solution = {
+    'Osterhase':'der', 'Osterei':'das', 'Osterkerze':'die', 'Karfreitag':'der', 'Osterlamm':'das',
+    'Auferstehung':'die', 'Osterkorb':'der', 'Osterfeuer':'das', 'Fastenzeit':'die', 'Osternest':'das',
+    'Palmsonntag':'der', 'Osterzeit':'die', 'Ostermontag':'der', 'Osterfest':'das', 'Ostersonntag':'der'
 };
 
-function renderEx5() {
-    const container = document.getElementById('main-section-5');
-    if (!container) return;
-    const options = ex5Data.wordBank.map(w => `<option value="${w}">${w}</option>`).join('');
-    let html = `<div class="exercise-instruction">Completează dialogul cu cuvintele corecte.</div>
-        <div class="word-bank">🗂️ <strong>Cuvinte:</strong> ${ex5Data.wordBank.join(' • ')}</div>`;
-    ex5Data.questions.forEach((q, i) => {
-        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group">
-            <label style="font-style:italic;">${q.before}
-                <select id="ex5-q${i}" style="margin:0 6px;"><option value="">…</option>${options}</select>${q.after}
-            </label>
-            <div class="feedback" id="ex5-f${i}"></div></div></div>`;
+function buildEx4() {
+    const c = document.getElementById('ex4-container'); if (!c) return;
+    let html = '<div class="exercise-instruction"><strong>📝 Sortează după gen.</strong><br>Pentru fiecare substantiv Ostern, scrie articolul corect: <strong>der</strong>, <strong>die</strong> sau <strong>das</strong>.</div>';
+    html += '<div class="ex4-grid">';
+    ex4Words.forEach((w, i) => {
+        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group"><label>____ <span class="nomen-highlight">${w}</span></label><input type="text" id="ex4-${i}" placeholder="der/die/das" style="width:90px;"></div><div class="feedback" id="ex4-f${i}"></div></div>`;
     });
-    html += buildExButtons(5);
-    html += buildRezolvari(5, ex5Data.questions.map((q, i) => `${i+1}. ${q.answer}`));
-    container.innerHTML = html;
+    html += '</div>';
+    c.innerHTML = html;
 }
 
-function checkEx5(showScore = true) {
+function checkEx4() {
     let correct = 0;
-    ex5Data.questions.forEach((q, i) => {
-        const sel = document.getElementById(`ex5-q${i}`); const fb = document.getElementById(`ex5-f${i}`);
-        if (!sel || !fb) return;
-        if (sel.value === q.answer) { fb.className = 'feedback correct'; fb.textContent = '✓ Corect!'; correct++; }
-        else { fb.className = 'feedback wrong'; fb.textContent = sel.value ? `✗ Greșit. Corect: ${q.answer}` : `✗ Fără răspuns. Corect: ${q.answer}`; }
+    ex4Words.forEach((w, i) => {
+        const u = normalizeAnswer(document.getElementById(`ex4-${i}`).value);
+        const f = document.getElementById(`ex4-f${i}`);
+        const expected = ex4Solution[w];
+        const ok = u === expected;
+        f.className = ok ? 'feedback correct' : 'feedback incorrect';
+        f.textContent = ok ? `✓ ${expected} ${w}` : `Corect: ${expected} ${w}`;
+        if (ok) correct++;
     });
-    if (showScore) showExScore(5, correct, ex5Data.questions.length);
-    return { correct, total: ex5Data.questions.length };
+    return { correct, total: ex4Words.length };
 }
 
-function resetEx5() {
-    ex5Data.questions.forEach((_, i) => {
-        const s = document.getElementById(`ex5-q${i}`); const f = document.getElementById(`ex5-f${i}`);
-        if (s) s.value = ''; if (f) f.className = 'feedback';
+// ============================================
+// EX 5: Dialog completion — Annette ↔ Andreea (5 spații)
+// ============================================
+const ex5Data = [
+    { id: 'a', before: 'Annette: Was machst du zu ', after: '?', accept: ['ostern'], correct: 'Ostern', hint: 'sărbătoarea' },
+    { id: 'b', before: 'Andreea: Ich fahre zu meiner ', after: ' und wir färben Eier zusammen.', accept: ['oma'], correct: 'Oma', hint: 'bunica' },
+    { id: 'c', before: 'Annette: Das klingt ', after: '! Frohe Ostern!', accept: ['wunderschoen', 'wunderschön'], correct: 'wunderschön', hint: 'minunat' },
+    { id: 'd', before: 'Andreea: Danke, ', after: ' auch! Frohe Ostern!', accept: ['ihnen'], correct: 'Ihnen', hint: 'dvs. (Dativ politicos)' },
+    { id: 'e', before: 'Andreea: Wir verstecken Ostereier im ', after: '.', accept: ['garten'], correct: 'Garten', hint: 'grădină' }
+];
+
+function buildEx5() {
+    const c = document.getElementById('ex5-container'); if (!c) return;
+    let html = '<div class="exercise-instruction"><strong>📝 Completează dialogul.</strong><br>Annette și Andreea se salută înainte de vacanța de Paști. Completează cuvintele lipsă.</div>';
+    ex5Data.forEach((item, i) => {
+        html += `<div class="exercise-item"><span class="exercise-number">${i+1}</span><div class="input-group"><label style="font-style:italic;">${item.before}<input type="text" id="ex5-${item.id}" placeholder="${item.hint}" style="width:200px; margin:0 4px;">${item.after}</label></div><div class="feedback" id="ex5-f${item.id}"></div></div>`;
     });
-    hideExScore(5);
-    const r = document.getElementById('rezolvari-5'); if (r) r.classList.remove('show');
+    c.innerHTML = html;
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────
-function buildExButtons(n) {
-    return `<div class="ex-btn-row">
-        <button class="btn-ex-check" onclick="checkEx${n}()">✓ Verifică</button>
-        <button class="btn-ex-reset" onclick="resetEx${n}()">↻ Resetează</button>
-    </div>
-    <div class="ex-score" id="ex-score-${n}"></div>`;
+function checkEx5() {
+    let correct = 0;
+    ex5Data.forEach(item => {
+        const u = normalizeAnswer(document.getElementById(`ex5-${item.id}`).value);
+        const f = document.getElementById(`ex5-f${item.id}`);
+        const ok = item.accept.some(a => normalizeAnswer(a) === u);
+        f.className = ok ? 'feedback correct' : 'feedback incorrect';
+        f.textContent = ok ? `✓ ${item.correct}` : `Corect: ${item.correct}`;
+        if (ok) correct++;
+    });
+    return { correct, total: ex5Data.length };
 }
 
-function showExScore(n, correct, total) {
-    const el = document.getElementById(`ex-score-${n}`);
-    if (!el) return;
-    const pct = Math.round((correct / total) * 100);
-    const emoji = pct === 100 ? '🏆' : pct >= 60 ? '👍' : '📖';
-    el.className = 'ex-score show';
-    el.innerHTML = `${emoji} <strong>${correct} / ${total}</strong> corect (${pct}%)`;
+// ============================================
+// Build all + check dispatcher
+// ============================================
+function checkExercise(n) {
+    let result;
+    if (n === 1) result = checkEx1();
+    else if (n === 2) result = checkEx2();
+    else if (n === 3) result = checkEx3();
+    else if (n === 4) result = checkEx4();
+    else if (n === 5) result = checkEx5();
+    if (!result) return;
+    const score = document.getElementById(`score-${n}`);
+    if (score) {
+        const pct = Math.round((result.correct / result.total) * 100);
+        const emoji = pct === 100 ? '🏆' : pct >= 60 ? '👍' : '📖';
+        score.className = 'score show';
+        score.innerHTML = `${emoji} <strong>${result.correct} / ${result.total}</strong> corect (${pct}%)`;
+    }
 }
 
-function hideExScore(n) {
-    const el = document.getElementById(`ex-score-${n}`);
-    if (el) el.className = 'ex-score';
+function resetExercise(n) {
+    let data;
+    if (n === 1) data = ex1Data;
+    else if (n === 2) data = ex2Data;
+    else if (n === 3) data = ex3Data;
+    else if (n === 4) { ex4Words.forEach((_, i) => { const inp = document.getElementById(`ex4-${i}`); const fb = document.getElementById(`ex4-f${i}`); if (inp) inp.value=''; if (fb) { fb.className='feedback'; fb.textContent=''; } }); const s = document.getElementById('score-4'); if (s) { s.className='score'; s.innerHTML=''; } return; }
+    else if (n === 5) data = ex5Data;
+    if (!data) return;
+    data.forEach(item => {
+        const inp = document.getElementById(`ex${n}-${item.id}`);
+        const fb = document.getElementById(`ex${n}-f${item.id}`);
+        if (inp) inp.value = '';
+        if (fb) { fb.className = 'feedback'; fb.textContent = ''; }
+    });
+    const s = document.getElementById(`score-${n}`);
+    if (s) { s.className = 'score'; s.innerHTML = ''; }
 }
 
-function buildRezolvari(n, lines) {
-    return `<button class="rezolvari-toggle" onclick="toggleRezolvari(${n})">📋 Vezi rezolvările</button>
-    <div class="rezolvari-content" id="rezolvari-${n}">${lines.join('<br>')}</div>`;
-}
-
-function toggleRezolvari(n) {
-    const el = document.getElementById(`rezolvari-${n}`);
-    if (el) el.classList.toggle('show');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    renderEx1(); renderEx2(); renderEx3(); renderEx4(); renderEx5();
-});
+buildEx1(); buildEx2(); buildEx3(); buildEx4(); buildEx5();

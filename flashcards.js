@@ -1,85 +1,89 @@
-/* ============================================================
-   OSTERN AUF DEUTSCH - flashcards.js
-   Claudia Toth - claudiatoth.github.io
-   20 flashcards cu Text-to-Speech automat (browser)
-   Conform MASTER: FLASHCARDS = Text-to-Speech (nu MP3)
-   ============================================================ */
+// ============================================
+// FLASHCARDS — Ostern auf Deutsch (refactor mai 2026)
+// Claudia Toth · Annettes Deutschkurs · 32 carduri
+// Substantive cu Sg + Pl (regula 26 mai) · Audio Hedda pre-generat
+// ⚠️ ZERO ghilimele interne — CAPS pentru emfază
+// ============================================
 
 const flashcardsData = [
-    { de: 'das Osterei',                ro: 'oul de Paști',              tip: 'neutru – das' },
-    { de: 'der Osterhase',              ro: 'iepurașul de Paști',        tip: 'masculin – der' },
-    { de: 'die Osterkerze',             ro: 'lumânarea de Paști',        tip: 'feminin – die' },
-    { de: 'der Osterkorb',              ro: 'coșul de Paști',            tip: 'masculin – der' },
-    { de: 'das Osterlamm',              ro: 'mielul de Paști',           tip: 'neutru – das' },
-    { de: 'der Palmsonntag',            ro: 'Duminica Floriilor',        tip: 'masculin – der' },
-    { de: 'der Karfreitag',             ro: 'Vinerea Mare',              tip: 'masculin – der' },
-    { de: 'der Ostersonntag',           ro: 'Duminica Paștelui',         tip: 'masculin – der' },
-    { de: 'der Ostermontag',            ro: 'Lunea de Paști',            tip: 'masculin – der' },
-    { de: 'die Auferstehung',           ro: 'învierea',                  tip: 'feminin – die' },
-    { de: 'das Osterfeuer',             ro: 'focul de Paști',            tip: 'neutru – das' },
-    { de: 'feiern',                     ro: 'a sărbători',               tip: 'verb regulat' },
-    { de: 'Eier bemalen',               ro: 'a vopsi ouă',               tip: 'verb + Akkusativ' },
-    { de: 'verstecken',                 ro: 'a ascunde',                 tip: 'verb regulat' },
-    { de: 'auferstehen',                ro: 'a învia',                   tip: 'verb separabil' },
-    { de: 'bunt',                       ro: 'colorat',                   tip: 'adjectiv' },
-    { de: 'festlich',                   ro: 'festiv, de sărbătoare',     tip: 'adjectiv' },
-    { de: 'gesegnet',                   ro: 'binecuvântat',              tip: 'adjectiv / participiu' },
-    { de: 'Christus ist auferstanden!', ro: 'Hristos a înviat!',         tip: '✝ Salut liturgic' },
-    { de: 'Wahrhaftig ist er auferstanden!', ro: 'Adevărat a înviat!',  tip: '✝ Răspuns liturgic' }
+    // ===== 15 SUBSTANTIVE OSTERN cu Sg + Pl =====
+    { de: "das Osterei · die Ostereier", ro: "oul · ouăle de Paști (neutru +er)", audio: "audio/cards/01-osterei.wav" },
+    { de: "der Osterhase · die Osterhasen", ro: "iepurașul · iepurașii de Paști (n-Deklination)", audio: "audio/cards/02-osterhase.wav" },
+    { de: "das Osterlamm · die Osterlämmer", ro: "mielul · mieii de Paști (neutru +Umlaut +er)", audio: "audio/cards/03-osterlamm.wav" },
+    { de: "der Osterkorb · die Osterkörbe", ro: "coșul · coșurile de Paști (masculin +Umlaut +e)", audio: "audio/cards/04-osterkorb.wav" },
+    { de: "die Osterkerze · die Osterkerzen", ro: "lumânarea · lumânările de Paști (feminin +n)", audio: "audio/cards/05-osterkerze.wav" },
+    { de: "das Osterfeuer · die Osterfeuer", ro: "focul · focurile de Paști (neutru invariabil)", audio: "audio/cards/06-osterfeuer.wav" },
+    { de: "das Osternest · die Osternester", ro: "cuibul · cuiburile de Paști (neutru +er)", audio: "audio/cards/07-osternest.wav" },
+    { de: "das Osterfest · die Osterfeste", ro: "sărbătoarea · sărbătorile de Paști (neutru +e)", audio: "audio/cards/08-osterfest.wav" },
+    { de: "der Palmsonntag · die Palmsonntage", ro: "Duminica · Duminicile Floriilor (masculin +e)", audio: "audio/cards/09-palmsonntag.wav" },
+    { de: "der Karfreitag · die Karfreitage", ro: "Vinerea · Vinerile Mari (zi liberă în Germania)", audio: "audio/cards/10-karfreitag.wav" },
+    { de: "der Karsamstag · die Karsamstage", ro: "Sâmbăta · Sâmbetele Mari (seara: Osterfeuer)", audio: "audio/cards/11-karsamstag.wav" },
+    { de: "der Ostersonntag · die Ostersonntage", ro: "Duminica · Duminicile Paștelui (Înviere)", audio: "audio/cards/12-ostersonntag.wav" },
+    { de: "der Ostermontag · die Ostermontage", ro: "Lunea · Lunile de Paști (zi liberă)", audio: "audio/cards/13-ostermontag.wav" },
+    { de: "die Auferstehung · die Auferstehungen", ro: "învierea · învierile (feminin -ung)", audio: "audio/cards/14-auferstehung.wav" },
+    { de: "die Fastenzeit · die Fastenzeiten", ro: "Postul · Posturile Mari (feminin +en)", audio: "audio/cards/15-fastenzeit.wav" },
+
+    // ===== 10 VERBE OSTERN =====
+    { de: "feiern", ro: "a sărbători · regulat · haben (Perfekt: hat gefeiert)", audio: "audio/cards/16-feiern.wav" },
+    { de: "verstecken", ro: "a ascunde · regulat · haben (Perfekt: hat versteckt)", audio: "audio/cards/17-verstecken.wav" },
+    { de: "suchen", ro: "a căuta · regulat · haben (Perfekt: hat gesucht)", audio: "audio/cards/18-suchen.wav" },
+    { de: "bemalen", ro: "a vopsi / a picta · regulat · haben (Perfekt: hat bemalt)", audio: "audio/cards/19-bemalen.wav" },
+    { de: "färben", ro: "a colora · regulat · haben (Perfekt: hat gefärbt)", audio: "audio/cards/20-faerben.wav" },
+    { de: "auferstehen", ro: "a învia · separabil TARE · sein (Perfekt: ist auferstanden)", audio: "audio/cards/21-auferstehen.wav" },
+    { de: "beten", ro: "a se ruga · regulat T-stem · haben (Perfekt: hat gebetet)", audio: "audio/cards/22-beten.wav" },
+    { de: "fasten", ro: "a posti · regulat T-stem · haben (Perfekt: hat gefastet)", audio: "audio/cards/23-fasten.wav" },
+    { de: "schmücken", ro: "a decora / a împodobi · regulat · haben (Perfekt: hat geschmückt)", audio: "audio/cards/24-schmuecken.wav" },
+    { de: "schenken", ro: "a dărui · regulat · haben (Perfekt: hat geschenkt)", audio: "audio/cards/25-schenken.wav" },
+
+    // ===== 5 ADJECTIVE DE SĂRBĂTOARE =====
+    { de: "bunt", ro: "colorat · bunte Eier (ouă colorate)", audio: "audio/cards/26-bunt.wav" },
+    { de: "festlich", ro: "festiv, de sărbătoare · festliches Essen", audio: "audio/cards/27-festlich.wav" },
+    { de: "gesegnet", ro: "binecuvântat · gesegnete Ostern", audio: "audio/cards/28-gesegnet.wav" },
+
+    // ===== 4 EXPRESII LITURGICE + URĂRI =====
+    { de: "Christus ist auferstanden!", ro: "Hristos a înviat! · salut liturgic creștin tradițional", audio: "audio/cards/29-christus-auferstanden.wav" },
+    { de: "Wahrhaftig ist er auferstanden!", ro: "Adevărat a înviat! · răspunsul la salutul liturgic", audio: "audio/cards/30-wahrhaftig.wav" },
+    { de: "Frohe Ostern!", ro: "Paște fericit! · urarea universală, neutră", audio: "audio/cards/31-frohe-ostern.wav" },
+    { de: "Gesegnete Ostern!", ro: "Paște binecuvântat! · urarea religioasă, tradițională", audio: "audio/cards/32-gesegnete-ostern.wav" }
 ];
 
 let currentCardIndex = 0;
+let currentAudio = null;
 
-function renderFlashcards() {
-    const container = document.getElementById('main-section-6');
-    if (!container) return;
-
-    container.innerHTML = `
-        <p style="text-align:center; color:#6b7280; font-size:0.88rem; margin-bottom:16px;">
-            👆 Click pe card pentru a întoarce • 🔊 pentru pronunție germană automată
-        </p>
-        <div class="flashcard-container">
-            <div class="flashcard" id="flashcard" onclick="flipCard()">
-                <div class="flashcard-inner" id="flashcard-inner">
-                    <div class="flashcard-front">
-                        <span class="card-label">🇩🇪 Deutsch</span>
-                        <span class="card-word" id="card-de"></span>
-                        <span class="flashcard-hint" id="card-tip"></span>
-                    </div>
-                    <div class="flashcard-back">
-                        <span class="card-label">🇷🇴 Română</span>
-                        <span class="card-word" id="card-ro"></span>
-                    </div>
-                </div>
+function buildFlashcards() {
+    const c = document.getElementById('flashcards-container');
+    if (!c) return;
+    c.innerHTML = `
+        <div class="exercise-instruction">
+            <strong>📇 32 carduri Ostern</strong> — 15 substantive (cu Sg + Pl), 10 verbe (cu Perfekt), 3 adjective, 4 expresii liturgice + urări.<br>
+            Click pe card pentru traducere. Click pe 🔊 pentru pronunție Hedda. Folosește săgețile pentru navigare.
+        </div>
+        <div class="flashcard-counter" id="flashcard-counter">Card 1 / ${flashcardsData.length}</div>
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <button class="flashcard-audio-btn" onclick="playFlashcardAudio(event)" title="Ascultă pronunția">🔊</button>
+            <div class="flashcard-content">
+                <div class="de" id="flashcard-de">${flashcardsData[0].de}</div>
+                <div class="ro" id="flashcard-ro">${flashcardsData[0].ro}</div>
             </div>
-
-            <div class="flashcard-controls">
-                <button onclick="prevCard()">← Înapoi</button>
-                <span class="flashcard-counter" id="card-counter">1 / ${flashcardsData.length}</span>
-                <button onclick="nextCard()">Înainte →</button>
-            </div>
-
-            <div class="flashcard-controls" style="margin-top:4px;">
-                <button class="audio-fc-btn" onclick="playCardAudio(event)">🔊 Pronunță</button>
-                <button onclick="shuffleCards()" style="background:#f0fdf4; color:#059669; border:2px solid #10b981;">🔀 Amestecă</button>
-                <button onclick="resetCards()" style="background:#f0fdf4; color:#6b7280; border:2px solid #d1d5db;">↩ Resetează</button>
-            </div>
+            <div class="flashcard-hint">👆 Click pentru traducere</div>
+        </div>
+        <div class="flashcard-controls">
+            <button class="flashcard-btn" onclick="prevCard()" id="prev-btn">← Anterior</button>
+            <button class="flashcard-btn" onclick="nextCard()" id="next-btn">Următor →</button>
         </div>
     `;
-
     updateFlashcard();
 }
 
 function updateFlashcard() {
     const card = flashcardsData[currentCardIndex];
-    if (!card) return;
-    document.getElementById('card-de').textContent  = card.de;
-    document.getElementById('card-ro').textContent  = card.ro;
-    document.getElementById('card-tip').textContent = card.tip;
-    document.getElementById('card-counter').textContent = `${currentCardIndex + 1} / ${flashcardsData.length}`;
-
-    // Dezactivează flip la schimbarea cardului
+    const deEl = document.getElementById('flashcard-de');
+    const roEl = document.getElementById('flashcard-ro');
+    const counter = document.getElementById('flashcard-counter');
     const fc = document.getElementById('flashcard');
+    if (deEl) deEl.textContent = card.de;
+    if (roEl) roEl.textContent = card.ro;
+    if (counter) counter.textContent = `Card ${currentCardIndex + 1} / ${flashcardsData.length}`;
     if (fc) fc.classList.remove('flipped');
 }
 
@@ -98,31 +102,29 @@ function prevCard() {
     updateFlashcard();
 }
 
-function playCardAudio(event) {
+function playFlashcardAudio(event) {
     event.stopPropagation();
     const card = flashcardsData[currentCardIndex];
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+    if (card.audio) {
+        currentAudio = new Audio(card.audio);
+        currentAudio.play().catch(() => playWithTTS(card.de));
+    } else {
+        playWithTTS(card.de);
+    }
+}
+
+function playWithTTS(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(card.de);
-        utterance.lang = 'de-DE';
-        utterance.rate = 0.82;
-        utterance.pitch = 1;
-        window.speechSynthesis.speak(utterance);
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'de-DE';
+        u.rate = 0.82;
+        window.speechSynthesis.speak(u);
     }
 }
 
-function shuffleCards() {
-    for (let i = flashcardsData.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [flashcardsData[i], flashcardsData[j]] = [flashcardsData[j], flashcardsData[i]];
-    }
-    currentCardIndex = 0;
-    updateFlashcard();
-}
-
-function resetCards() {
-    currentCardIndex = 0;
-    updateFlashcard();
-}
-
-document.addEventListener('DOMContentLoaded', renderFlashcards);
+buildFlashcards();
