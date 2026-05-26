@@ -15,12 +15,12 @@ const flashcardsData = [
     { de: "das Osterfeuer · die Osterfeuer", ro: "focul · focurile de Paști (neutru invariabil)", audio: "audio/cards/06-osterfeuer.wav" },
     { de: "das Osternest · die Osternester", ro: "cuibul · cuiburile de Paști (neutru +er)", audio: "audio/cards/07-osternest.wav" },
     { de: "das Osterfest · die Osterfeste", ro: "sărbătoarea · sărbătorile de Paști (neutru +e)", audio: "audio/cards/08-osterfest.wav" },
-    { de: "der Palmsonntag · die Palmsonntage", ro: "Duminica · Duminicile Floriilor (masculin +e)", audio: "audio/cards/09-palmsonntag.wav" },
-    { de: "der Karfreitag · die Karfreitage", ro: "Vinerea · Vinerile Mari (zi liberă în Germania)", audio: "audio/cards/10-karfreitag.wav" },
-    { de: "der Karsamstag · die Karsamstage", ro: "Sâmbăta · Sâmbetele Mari (seara: Osterfeuer)", audio: "audio/cards/11-karsamstag.wav" },
-    { de: "der Ostersonntag · die Ostersonntage", ro: "Duminica · Duminicile Paștelui (Înviere)", audio: "audio/cards/12-ostersonntag.wav" },
-    { de: "der Ostermontag · die Ostermontage", ro: "Lunea · Lunile de Paști (zi liberă)", audio: "audio/cards/13-ostermontag.wav" },
-    { de: "die Auferstehung · die Auferstehungen", ro: "învierea · învierile (feminin -ung)", audio: "audio/cards/14-auferstehung.wav" },
+    { de: "der Palmsonntag · die Palmsonntage", ro: "Duminica Floriilor · Duminicile Floriilor (rar, peste ani) — zi unică în calendar", audio: "audio/cards/09-palmsonntag.wav" },
+    { de: "der Karfreitag · die Karfreitage", ro: "Vinerea Mare · Vinerile Mari (rar, peste ani) — zi liberă în Germania", audio: "audio/cards/10-karfreitag.wav" },
+    { de: "der Karsamstag · die Karsamstage", ro: "Sâmbăta Mare · Sâmbetele Mari (rar, peste ani) — seara: Osterfeuer", audio: "audio/cards/11-karsamstag.wav" },
+    { de: "der Ostersonntag · die Ostersonntage", ro: "Duminica Paștelui · Duminicile Paștelui (rar, peste ani) — Învierea", audio: "audio/cards/12-ostersonntag.wav" },
+    { de: "der Ostermontag · die Ostermontage", ro: "Lunea de Paști · Lunile de Paști (rar, peste ani) — zi liberă", audio: "audio/cards/13-ostermontag.wav" },
+    { de: "die Auferstehung · die Auferstehungen", ro: "Învierea (creștină) · învierile (rar, termen religios general) — feminin -ung", audio: "audio/cards/14-auferstehung.wav" },
     { de: "die Fastenzeit · die Fastenzeiten", ro: "Postul · Posturile Mari (feminin +en)", audio: "audio/cards/15-fastenzeit.wav" },
 
     // ===== 10 VERBE OSTERN =====

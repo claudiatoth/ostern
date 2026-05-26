@@ -44,11 +44,11 @@ const theoryHTML = `
             <table class="grammar-table">
                 <thead><tr><th>Zi</th><th>Sg / Pl</th><th>Traducere RO</th><th>Status</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>Palmsonntag</strong></td><td>der Palmsonntag · die Palmsonntage</td><td>Duminica Floriilor · Duminicile Floriilor</td><td>începutul Săptămânii Sfinte</td></tr>
-                    <tr><td><strong>Karfreitag</strong></td><td>der Karfreitag · die Karfreitage</td><td>Vinerea Mare · Vinerile Mari</td><td>🏖️ zi liberă (Feiertag)</td></tr>
-                    <tr><td><strong>Karsamstag</strong></td><td>der Karsamstag · die Karsamstage</td><td>Sâmbăta Mare · Sâmbetele Mari</td><td>seara: Osterfeuer</td></tr>
-                    <tr><td><strong>Ostersonntag</strong></td><td>der Ostersonntag · die Ostersonntage</td><td>Duminica Paștelui · Duminicile Paștelui</td><td>🥚 căutare Ostereier</td></tr>
-                    <tr><td><strong>Ostermontag</strong></td><td>der Ostermontag · die Ostermontage</td><td>Lunea de Paști · Lunile de Paști</td><td>🏖️ zi liberă (Feiertag)</td></tr>
+                    <tr><td><strong>Palmsonntag</strong></td><td>der Palmsonntag · die Palmsonntage</td><td>Duminica Floriilor (zi unică în calendar) · Duminicile Floriilor (rar, peste ani)</td><td>începutul Săptămânii Sfinte</td></tr>
+                    <tr><td><strong>Karfreitag</strong></td><td>der Karfreitag · die Karfreitage</td><td>Vinerea Mare · Vinerile Mari (rar, peste ani)</td><td>🏖️ zi liberă (Feiertag)</td></tr>
+                    <tr><td><strong>Karsamstag</strong></td><td>der Karsamstag · die Karsamstage</td><td>Sâmbăta Mare · Sâmbetele Mari (rar, peste ani)</td><td>seara: Osterfeuer</td></tr>
+                    <tr><td><strong>Ostersonntag</strong></td><td>der Ostersonntag · die Ostersonntage</td><td>Duminica Paștelui · Duminicile Paștelui (rar, peste ani)</td><td>🥚 căutare Ostereier</td></tr>
+                    <tr><td><strong>Ostermontag</strong></td><td>der Ostermontag · die Ostermontage</td><td>Lunea de Paști · Lunile de Paști (rar, peste ani)</td><td>🏖️ zi liberă (Feiertag)</td></tr>
                 </tbody>
             </table>
 
@@ -126,9 +126,9 @@ const theoryHTML = `
                 <tbody>
                     <tr><td><strong>der Osterhase</strong></td><td><strong>die Osterhasen</strong></td><td>iepurașul · iepurașii de Paști</td><td>+n (n-Deklination)</td></tr>
                     <tr><td><strong>der Osterkorb</strong></td><td><strong>die Osterkörbe</strong></td><td>coșul · coșurile de Paști</td><td>+Umlaut +e</td></tr>
-                    <tr><td><strong>der Palmsonntag</strong></td><td><strong>die Palmsonntage</strong></td><td>Duminica · Duminicile Floriilor</td><td>+e</td></tr>
-                    <tr><td><strong>der Karfreitag</strong></td><td><strong>die Karfreitage</strong></td><td>Vinerea · Vinerile Mari</td><td>+e</td></tr>
-                    <tr><td><strong>der Ostermontag</strong></td><td><strong>die Ostermontage</strong></td><td>Lunea · Lunile de Paști</td><td>+e</td></tr>
+                    <tr><td><strong>der Palmsonntag</strong></td><td><strong>die Palmsonntage</strong></td><td>Duminica Floriilor · Duminicile Floriilor (rar, peste ani)</td><td>+e</td></tr>
+                    <tr><td><strong>der Karfreitag</strong></td><td><strong>die Karfreitage</strong></td><td>Vinerea Mare · Vinerile Mari (rar, peste ani)</td><td>+e</td></tr>
+                    <tr><td><strong>der Ostermontag</strong></td><td><strong>die Ostermontage</strong></td><td>Lunea de Paști · Lunile de Paști (rar, peste ani)</td><td>+e</td></tr>
                 </tbody>
             </table>
 
@@ -137,7 +137,7 @@ const theoryHTML = `
                 <thead><tr><th>Singular</th><th>Plural</th><th>Traducere RO</th><th>Tipar plural</th></tr></thead>
                 <tbody>
                     <tr><td><strong>die Osterkerze</strong></td><td><strong>die Osterkerzen</strong></td><td>lumânarea · lumânările de Paști</td><td>+n</td></tr>
-                    <tr><td><strong>die Auferstehung</strong></td><td><strong>die Auferstehungen</strong></td><td>învierea · învierile</td><td>+en (-ung)</td></tr>
+                    <tr><td><strong>die Auferstehung</strong></td><td><strong>die Auferstehungen</strong></td><td>Învierea (creștină) · învierile (rar, termen religios general)</td><td>+en (-ung)</td></tr>
                     <tr><td><strong>die Fastenzeit</strong></td><td><strong>die Fastenzeiten</strong></td><td>Postul · Posturile Mari</td><td>+en</td></tr>
                     <tr><td><strong>die Osterzeit</strong></td><td><strong>die Osterzeiten</strong></td><td>perioada · perioadele de Paști</td><td>+en</td></tr>
                 </tbody>
