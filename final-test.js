@@ -201,10 +201,50 @@ function finishTest() {
     document.getElementById('test-wizard').style.display = 'none';
     const r = document.getElementById('test-results');
     r.style.display = 'block';
+
+    // Construiește lista de greșeli cu răspuns corect + explicație
+    let mistakesHTML = '';
+    const mistakes = [];
+    finalTestData.forEach((q, i) => {
+        const userAnswer = userAnswers[i] || '';
+        let isCorrect = false;
+        if (q.type === 'multiple') isCorrect = userAnswer === q.correct;
+        else {
+            const u = normalizeTestAnswer(userAnswer);
+            isCorrect = q.accept.some(a => normalizeTestAnswer(a) === u);
+        }
+        if (!isCorrect) {
+            mistakes.push({ idx: i + 1, q, userAnswer });
+        }
+    });
+
+    if (mistakes.length > 0) {
+        mistakesHTML = '<div style="margin-top:30px; padding:20px; background:#fef2f2; border:2px solid #fca5a5; border-radius:12px;">' +
+            '<h4 style="color:#991b1b; margin-bottom:12px;">📝 Greșelile tale — recapitulare cu răspunsuri corecte</h4>';
+        mistakes.forEach(m => {
+            const userShow = m.userAnswer ? `<em>„${m.userAnswer}"</em>` : '<em>(fără răspuns)</em>';
+            mistakesHTML += '<div style="background:#fff; padding:12px 14px; margin-bottom:10px; border-left:4px solid #dc2626; border-radius:6px;">' +
+                `<div style="font-weight:bold; color:#065f46; margin-bottom:6px;">Întrebarea ${m.idx} <span style="color:#6b7280; font-weight:normal; font-size:0.85rem;">· ${m.q.category}</span></div>` +
+                `<div style="margin-bottom:6px; color:#374151;">${m.q.question}` +
+                (m.q.sentence ? ` <em style="color:#6b7280;">${m.q.sentence}</em>` : '') +
+                (m.q.ro && !m.q.sentence ? ` <em style="color:#6b7280;">🇷🇴 ${m.q.ro}</em>` : '') +
+                '</div>' +
+                `<div style="color:#dc2626; font-size:0.92rem;">❌ Răspunsul tău: ${userShow}</div>` +
+                `<div style="color:#047857; font-size:0.92rem; margin-top:4px;">✓ Răspuns corect: <strong>${m.q.correct}</strong></div>` +
+                `<div style="color:#6b7280; font-size:0.88rem; font-style:italic; margin-top:6px; padding-top:6px; border-top:1px dashed #e5e7eb;">💡 ${m.q.explanation}</div>` +
+                '</div>';
+        });
+        mistakesHTML += '</div>';
+    } else {
+        mistakesHTML = '<div style="margin-top:24px; padding:16px; background:#ecfdf5; border:2px solid #10B981; border-radius:12px; text-align:center;">' +
+            '<p style="color:#065f46; font-weight:bold;">🏆 Toate răspunsurile corecte — fără greșeli!</p></div>';
+    }
+
     r.innerHTML = `
         <h3 style="color:#065f46; text-align:center;">${passed ? '🏆 Felicitări — Test trecut!' : '📖 Mai exersează puțin'}</h3>
         <div style="text-align:center; font-size:2rem; font-weight:bold; color:${passed ? '#047857' : '#dc2626'}; margin:20px 0;">${correct} / ${total} <span style="font-size:1.2rem;">(${pct}%)</span></div>
         <p style="text-align:center; color:#6b7280;">${passed ? 'Cunoști bine vocabularul Ostern!' : 'Recitește teoria și încearcă din nou.'}</p>
+        ${mistakesHTML}
         <div style="text-align:center; margin-top:20px;">
             <button class="btn btn-check" onclick="resetTest()">↻ Reia testul</button>
         </div>
